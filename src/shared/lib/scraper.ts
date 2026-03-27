@@ -79,7 +79,6 @@ const BRAND_MAP: Record<string, string> = {
   "애스턴마틴": "Aston Martin",
   "리비안": "Rivian",
   "폴스타": "Polestar",
-  "제네시스": "Genesis",
 };
 
 interface RawItem {
