@@ -1,12 +1,12 @@
 import type { CarsResponse, FilterState } from "../model/types";
 
-export const PER_PAGE = 9;
+export const PER_PAGE = 12;
 
 export async function fetchCars(filters: FilterState): Promise<CarsResponse> {
   const params = new URLSearchParams({ limit: String(PER_PAGE) });
   if (filters.brand) params.set("brand", filters.brand);
-  if (filters.fuel)  params.set("fuel",  filters.fuel);
-  if (filters.query) params.set("q",     filters.query);
+  if (filters.fuel) params.set("fuel", filters.fuel);
+  if (filters.query) params.set("q", filters.query);
   if (filters.sort !== "default") params.set("sort", filters.sort);
   if (filters.page > 1) params.set("page", String(filters.page));
 
