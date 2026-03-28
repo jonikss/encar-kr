@@ -5,9 +5,11 @@ export function formatPrice(krw: number): string {
   return man.toLocaleString("ko-KR") + "만원";
 }
 
+const KRW_TO_RUB = 0.054;
+
 export function formatRUB(krw: number): string {
   if (!krw) return "";
-  return "≈ " + Math.round(krw * 0.076).toLocaleString("ru-RU") + " ₽";
+  return "≈ " + Math.round(krw * KRW_TO_RUB).toLocaleString("ru-RU") + " ₽";
 }
 
 export function formatMileage(km: number): string {
