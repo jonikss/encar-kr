@@ -43,5 +43,7 @@ export function useSearch() {
     }
   }, [setFilter, reset]);
 
-  return { handleSubmit, isLoading };
+  const handleClear = useCallback(() => reset(), [reset]);
+
+  return { handleSubmit, handleClear, isLoading };
 }

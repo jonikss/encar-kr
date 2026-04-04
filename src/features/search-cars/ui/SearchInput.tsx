@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useSearch } from "../model/useSearch";
 
 export function SearchInput() {
-  const { handleSubmit, isLoading } = useSearch();
+  const { handleSubmit, handleClear, isLoading } = useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -21,6 +21,9 @@ export function SearchInput() {
         type="search"
         placeholder="Поиск по марке, модели, комплектации…"
         disabled={isLoading}
+        onChange={e => {
+          if (!e.target.value) handleClear();
+        }}
         onKeyDown={e => {
           if (e.key === "Enter") {
             e.preventDefault();
