@@ -5,7 +5,7 @@ export function formatPrice(krw: number): string {
   return man.toLocaleString("ko-KR") + "만원";
 }
 
-const KRW_TO_RUB = 0.054;
+export const KRW_TO_RUB = 0.054;
 
 export function formatRUB(krw: number): string {
   if (!krw) return "";

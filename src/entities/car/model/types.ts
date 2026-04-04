@@ -32,6 +32,8 @@ export interface FilterState {
   sort: SortOption;
   query: string;
   page: number;
+  priceMin: string;
+  priceMax: string;
 }
 
 export interface CarsResponse {

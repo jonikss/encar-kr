@@ -4,6 +4,7 @@ export { runScrape } from "./lib/scraper";
 export {
   formatPrice,
   formatRUB,
+  KRW_TO_RUB,
   formatMileage,
   fuelLabel,
   fuelClass,

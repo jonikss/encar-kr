@@ -7,6 +7,8 @@ export async function fetchCars(filters: FilterState): Promise<CarsResponse> {
   if (filters.brand) params.set("brand", filters.brand);
   if (filters.fuel) params.set("fuel", filters.fuel);
   if (filters.query) params.set("q", filters.query);
+  if (filters.priceMin) params.set("priceMin", filters.priceMin);
+  if (filters.priceMax) params.set("priceMax", filters.priceMax);
   if (filters.sort !== "default") params.set("sort", filters.sort);
   if (filters.page > 1) params.set("page", String(filters.page));
 

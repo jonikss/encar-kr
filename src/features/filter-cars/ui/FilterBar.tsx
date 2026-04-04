@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function FilterBar({ brands, count, updatedAt }: Props) {
-  const { brand, fuel, sort, setFilter } = useFiltersStore();
+  const { brand, fuel, sort, priceMin, priceMax, setFilter } = useFiltersStore();
 
   return (
     <div className="controls">
@@ -44,6 +44,14 @@ export function FilterBar({ brands, count, updatedAt }: Props) {
           onChange={e => setFilter("fuel", e.target.value)}>
           {FUELS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
         </select>
+
+        <input className="ctrl-input" type="number" placeholder="Цена от, ₽"
+          value={priceMin}
+          onChange={e => setFilter("priceMin", e.target.value)} />
+
+        <input className="ctrl-input" type="number" placeholder="Цена до, ₽"
+          value={priceMax}
+          onChange={e => setFilter("priceMax", e.target.value)} />
 
         <div className="divider" />
 

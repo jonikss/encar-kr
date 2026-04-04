@@ -13,6 +13,8 @@ const DEFAULT: FilterState = {
   sort:  "default",
   query: "",
   page:  1,
+  priceMin: "",
+  priceMax: "",
 };
 
 export const useFiltersStore = create<FiltersStore>((set) => ({
@@ -34,6 +36,8 @@ export const selectFilters = (s: FiltersStore): FilterState => ({
   sort:  s.sort,
   query: s.query,
   page:  s.page,
+  priceMin: s.priceMin,
+  priceMax: s.priceMax,
 });
 
 export function useFilters(): FilterState {
