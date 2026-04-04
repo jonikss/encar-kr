@@ -10,6 +10,7 @@
 | База данных      | Supabase (PostgreSQL)                       |
 | Серверный стейт  | TanStack Query v5 (`@tanstack/react-query`) |
 | Клиентский стейт | Zustand v4                                  |
+| AI-поиск         | LangChain.js + OpenAI-совместимый провайдер |
 | Деплой           | Vercel + Cron                               |
 | Архитектура      | Feature-Sliced Design (FSD)                 |
 
@@ -38,7 +39,8 @@ src/
 │   └── api/
 │       ├── cars/route.ts             # GET /api/cars — список с фильтрами, сортировкой, пагинацией
 │       ├── brands/route.ts           # GET /api/brands — уникальные марки
-│       └── scrape/route.ts           # GET|POST /api/scrape — запуск парсера
+│       ├── scrape/route.ts           # GET|POST /api/scrape — запуск парсера
+│       └── smart-search/route.ts     # POST /api/smart-search — AI-парсинг поискового запроса
 │
 ├── pages/
 │   └── home/
@@ -60,11 +62,11 @@ src/
 │   ├── filter-cars/
 │   │   ├── index.ts
 │   │   ├── model/filtersStore.ts     # Zustand — единственный источник истины фильтров
-│   │   └── ui/FilterBar.tsx          # Панель фильтров: марка, топливо, сортировка
+│   │   └── ui/FilterBar.tsx          # Панель фильтров: марка, топливо, цена, сортировка, сброс
 │   └── search-cars/
 │       ├── index.ts
-│       ├── model/useSearch.ts        # Дебаунс поиска → Zustand
-│       └── ui/SearchInput.tsx        # Поле поиска в шапке
+│       ├── model/useSearch.ts        # AI-поиск по Enter → structured output → Zustand
+│       └── ui/SearchInput.tsx        # Поле поиска в шапке (Enter = AI, fallback = ILIKE)
 │
 ├── entities/
 │   └── car/
@@ -81,10 +83,67 @@ src/
     ├── lib/
     │   ├── queryClient.ts            # Singleton QueryClient
     │   ├── scraper.ts                # Парсер ENCAR API → Supabase
+    │   ├── smartSearch.ts            # LLM: zod-схема, промпт, parseSearchQuery()
     │   └── utils.ts                  # Локализация: English (DB) → Русский (UI)
     └── ui/
         └── Skeleton.tsx              # Скелетон для загрузки
 ```
+
+## AI-поиск (Smart Search)
+
+Поиск в шапке использует LLM для понимания запросов на естественном языке. Пользователь вводит текст и нажимает **Enter** — запрос отправляется в LLM, который извлекает структурированные фильтры.
+
+### Как это работает
+
+```
+"бензиновый хёндай до 2 млн подешевле"
+                ↓ Enter
+        POST /api/smart-search
+                ↓
+   LangChain.js → ChatOpenAI (withStructuredOutput + zod)
+                ↓
+   { brand: "Hyundai", fuel: "Gasoline", priceMax: "2000000", sort: "price_asc" }
+                ↓
+   Zustand setFilter() → FilterBar обновляется → данные перезагружаются
+```
+
+### Возможности парсера
+
+- **Марка** — распознаёт русские варианты: "хёндай" → Hyundai, "киа" → Kia, "бмв" → BMW
+- **Топливо** — "бензиновый" → Gasoline, "дизель" → Diesel, "электро" → Electric
+- **Цена** — "до 2 млн" → priceMax: 2000000, "от 500 тыс" → priceMin: 500000
+- **Сортировка** — "подешевле" → price_asc, "новее" → year_desc, "меньше пробег" → mileage_asc
+- **Остаток** — нераспознанная часть (модель, комплектация) попадает в текстовый поиск
+
+### Провайдер
+
+Используется любой OpenAI-совместимый API-провайдер. Настраивается через env-переменные:
+
+```
+OPENAI_API_KEY=<ключ>
+OPENAI_BASE_URL=https://api.провайдер.ru/v1
+OPENAI_MODEL=openai/gpt-4o-mini
+```
+
+### Архитектура (FSD)
+
+| Что                          | Где                                  |
+| ---------------------------- | ------------------------------------ |
+| Zod-схема, промпт, LLM-вызов | `shared/lib/smartSearch.ts`          |
+| Серверный route              | `app/api/smart-search/route.ts`      |
+| Клиентская логика            | `features/search-cars/model/useSearch.ts` |
+| UI поиска                    | `features/search-cars/ui/SearchInput.tsx` |
+
+При ошибке LLM запрос уходит в обычный текстовый поиск (ILIKE) как fallback.
+
+## Фильтрация
+
+- **Марка** — выпадающий список из БД
+- **Топливо** — бензин, дизель, гибрид, электро, газ
+- **Цена** — диапазон в рублях (конвертируется в KRW через `KRW_TO_RUB`)
+- **Сортировка** — по цене, году, пробегу
+- **Текстовый поиск** — отображается как тег с кнопкой сброса
+- **Сброс** — кнопка «Сбросить» появляется при активных фильтрах
 
 ## Поток данных
 
@@ -98,7 +157,7 @@ ENCAR API (корейский) → scraper.ts (Korean→English) → Supabase (E
 
 | Данные                                   | Инструмент     | Расположение                                 |
 | ---------------------------------------- | -------------- | -------------------------------------------- |
-| Фильтры (brand, fuel, sort, query, page) | Zustand        | `features/filter-cars/model/filtersStore.ts`  |
+| Фильтры (brand, fuel, price, sort, query, page) | Zustand  | `features/filter-cars/model/filtersStore.ts`  |
 | Список авто с сервера                    | TanStack Query | `entities/car/api/queries.ts`                |
 | Список марок                             | TanStack Query | `entities/car/api/queries.ts`                |
 | QueryClient singleton                    | —              | `shared/lib/queryClient.ts`                  |
@@ -112,7 +171,8 @@ npm install
 # Переменные окружения
 cp .env.local.example .env.local
 # Заполнить NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
-# SUPABASE_SERVICE_ROLE_KEY, SCRAPE_SECRET
+# SUPABASE_SERVICE_ROLE_KEY, SCRAPE_SECRET,
+# OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL
 
 # Разработка
 npm run dev
