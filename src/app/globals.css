@@ -27,6 +27,8 @@ button { cursor: pointer; font-family: var(--font-b); border: none; }
 .header-search input::placeholder { color: var(--fg3); }
 .header-search input:focus { border-color: var(--gold); }
 .header-search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--fg3); pointer-events: none; width: 16px; height: 16px; }
+.header-search-spinner { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: 2px solid var(--card-bdr); border-top-color: var(--gold); border-radius: 50%; animation: spin .6s linear infinite; pointer-events: none; }
+@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
 .header-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
 .update-pill { font-family: var(--font-m); font-size: 11px; color: var(--fg3); background: var(--bg3); border: 1px solid var(--card-bdr); border-radius: 100px; padding: 4px 10px; }
 .update-pill span { color: var(--gold); }
@@ -60,6 +62,9 @@ button { cursor: pointer; font-family: var(--font-b); border: none; }
 .ctrl-input[type=number] { -moz-appearance: textfield; }
 .ctrl-select option { background: var(--bg2); }
 .divider { width: 1px; height: 24px; background: var(--card-bdr); margin: 0 4px; }
+.filter-tag { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; background: var(--bg3); border: 1.5px solid var(--gold); border-radius: 8px; font-family: var(--font-b); font-size: 13px; color: var(--fg); }
+.filter-tag-x { background: none; border: none; color: var(--fg3); font-size: 16px; cursor: pointer; padding: 0; line-height: 1; }
+.filter-tag-x:hover { color: var(--fg); }
 .results-count { font-family: var(--font-m); font-size: 12px; color: var(--fg3); margin-left: auto; }
 .results-count strong { color: var(--fg2); font-weight: 400; }
 

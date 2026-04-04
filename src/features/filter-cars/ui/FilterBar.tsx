@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function FilterBar({ brands, count, updatedAt }: Props) {
-  const { brand, fuel, sort, priceMin, priceMax, setFilter } = useFiltersStore();
+  const { brand, fuel, sort, priceMin, priceMax, query, setFilter } = useFiltersStore();
 
   return (
     <div className="controls">
@@ -59,6 +59,13 @@ export function FilterBar({ brands, count, updatedAt }: Props) {
           onChange={e => setFilter("sort", e.target.value as SortOption)}>
           {SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
+
+        {query && (
+          <span className="filter-tag">
+            «{query}»
+            <button className="filter-tag-x" onClick={() => setFilter("query", "")}>×</button>
+          </span>
+        )}
 
         <div className="results-count">
           <strong>{count.toLocaleString("ru-RU")}</strong> объявлений

@@ -11,4 +11,6 @@ export {
   transmissionLabel,
   timeAgo,
 } from "./lib/utils";
+export { parseSearchQuery } from "./lib/smartSearch";
+export type { SmartSearchResult } from "./lib/smartSearch";
 export { CardSkeleton } from "./ui/Skeleton";
