@@ -62,9 +62,11 @@ button { cursor: pointer; font-family: var(--font-b); border: none; }
 .ctrl-input[type=number] { -moz-appearance: textfield; }
 .ctrl-select option { background: var(--bg2); }
 .divider { width: 1px; height: 24px; background: var(--card-bdr); margin: 0 4px; }
-.filter-tag { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; background: var(--bg3); border: 1.5px solid var(--gold); border-radius: 8px; font-family: var(--font-b); font-size: 13px; color: var(--fg); }
+.filter-tag { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; background: var(--bg3); border: 1.5px solid var(--gold); border-radius: 10px; font-family: var(--font-b); font-size: 13px; color: var(--fg); }
 .filter-tag-x { background: none; border: none; color: var(--fg3); font-size: 16px; cursor: pointer; padding: 0; line-height: 1; }
 .filter-tag-x:hover { color: var(--fg); }
+.ctrl-reset { height: 40px; padding: 0 14px; background: none; border: 1.5px solid var(--card-bdr); border-radius: 10px; font-family: var(--font-b); font-size: 13px; color: var(--fg3); cursor: pointer; transition: border-color .2s, color .2s; }
+.ctrl-reset:hover { border-color: var(--gold); color: var(--fg); }
 .results-count { font-family: var(--font-m); font-size: 12px; color: var(--fg3); margin-left: auto; }
 .results-count strong { color: var(--fg2); font-weight: 400; }
 

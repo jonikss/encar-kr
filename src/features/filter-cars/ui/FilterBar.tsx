@@ -27,7 +27,9 @@ interface Props {
 }
 
 export function FilterBar({ brands, count, updatedAt }: Props) {
-  const { brand, fuel, sort, priceMin, priceMax, query, setFilter } = useFiltersStore();
+  const { brand, fuel, sort, priceMin, priceMax, query, setFilter, reset } = useFiltersStore();
+
+  const hasFilters = brand || fuel || priceMin || priceMax || query || sort !== "default";
 
   return (
     <div className="controls">
@@ -65,6 +67,10 @@ export function FilterBar({ brands, count, updatedAt }: Props) {
             «{query}»
             <button className="filter-tag-x" onClick={() => setFilter("query", "")}>×</button>
           </span>
+        )}
+
+        {hasFilters && (
+          <button className="ctrl-reset" onClick={reset}>Сбросить</button>
         )}
 
         <div className="results-count">
